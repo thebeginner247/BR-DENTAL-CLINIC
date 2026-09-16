@@ -54,7 +54,7 @@ const NAV = [
 ];
 
 const DEMO_USERS = [
-  { id: 'u1', name: 'Maya Carter', email: 'admin@brdental.com', password: 'admin123', role: 'super_admin', status: 'Active', created: 'Jan 08, 2025' },
+  { id: 'u1', name: 'Ma. Elena B. Retuerma', email: 'admin@brdental.com', password: 'admin123', role: 'super_admin', status: 'Active', created: 'Jan 08, 2025' },
   { id: 'u2', name: 'Dr. Elena Moore', email: 'dentist@brdental.com', password: 'demo123', role: 'dentist', status: 'Active', created: 'Feb 14, 2025' },
   { id: 'u3', name: 'Jordan Lee', email: 'reception@brdental.com', password: 'demo123', role: 'receptionist', status: 'Active', created: 'Mar 02, 2025' },
   { id: 'u4', name: 'Amelia Brooks', email: 'patient@brdental.com', password: 'demo123', role: 'patient', status: 'Active', created: 'Mar 11, 2025' },
@@ -174,8 +174,55 @@ function render() {
       ? renderRegister()
       : renderAuth();
 
+  updateAuthLabels();
+  updateDashboardGreeting();
+  updatePatientOverview();
   bindEvents();
 }
+
+function updateAuthLabels() {
+  const loginButton = document.querySelector('#login-form .button-primary');
+  const registerButton = document.querySelector('#register-form .button-primary');
+  const registerLink = document.querySelector('[data-action="register"]');
+  const loginLink = document.querySelector('[data-action="login"]');
+  const backLoginLink = document.querySelector('[data-action="back-login"]');
+
+  if (loginButton) loginButton.textContent = 'Login';
+  if (registerButton) registerButton.textContent = 'Register';
+  if (registerLink) registerLink.textContent = 'Register';
+  if (loginLink) loginLink.textContent = 'Login';
+  if (backLoginLink) backLoginLink.textContent = 'Login';
+}
+
+function updateDashboardGreeting() {
+  if (state.user?.role !== 'patient' && state.view === 'dashboard') {
+    const greeting = document.querySelector('.page-heading .eyebrow');
+    if (greeting) greeting.textContent = 'Good morning';
+  }
+
+  const logoutButton = document.querySelector('[data-action="logout"]');
+  if (logoutButton) {
+    logoutButton.textContent = 'Log out';
+    logoutButton.classList.add('logout-button');
+  }
+}
+
+function updatePatientOverview() {
+  const content = document.querySelector('.content');
+  if (!content || state.user?.role !== 'patient' || state.view !== 'dashboard') return;
+
+  content.classList.add('patient-mode');
+  const heroTitle = content.querySelector('.hero-banner h2');
+  const heroText = content.querySelector('.hero-banner p');
+  const heroEyebrow = content.querySelector('.hero-banner .eyebrow');
+  const scheduleButton = content.querySelector('.hero-banner [data-view="appointments"]');
+
+  if (heroEyebrow) heroEyebrow.textContent = 'Your next step';
+  if (heroTitle) heroTitle.textContent = 'Manage your dental visits.';
+  if (heroText) heroText.textContent = 'Book a visit or check the details of an upcoming appointment.';
+  if (scheduleButton) scheduleButton.textContent = 'My appointments';
+}
+
 function renderAuth() {
   return `<main class="auth-page"><section class="auth-visual"><div class="brand">${brandMark()}<div><strong>BR Dental Clinic</strong><span>care, clarity, confidence</span></div></div><div class="auth-copy"><div class="eyebrow" style="color:#a9e1d5">The calm side of care</div><h1>Better visits start with a better view.</h1><p>A focused workspace for your clinic team to coordinate appointments, patient care, and the details that keep every smile moving forward.</p><div class="auth-points"><div class="auth-point">${ICONS.check} One clear view of today's care</div><div class="auth-point">${ICONS.check} Thoughtful access for every role</div><div class="auth-point">${ICONS.check} Ready for your future backend</div></div></div><div class="auth-footer">Frontend demonstration · BR Dental Clinic</div></section><section class="auth-form-side"><div class="auth-form"><div class="eyebrow">Welcome back</div><h2>Sign in to your clinic</h2><p class="subtitle">Use a demo account below or enter your clinic credentials.</p><form id="login-form" class="form-stack"><div class="field"><label for="login-email">Email or username</label><input id="login-email" name="email" type="text" placeholder="you@brdental.com" required /></div><div class="field"><label for="login-password">Password</label><div class="password-wrap"><input id="login-password" name="password" type="password" placeholder="Enter your password" required /><button class="password-toggle" type="button" data-toggle-password="login-password" aria-label="Show password">${ICONS.eye}</button></div></div><div class="form-meta"><label class="check"><input type="checkbox" /> Remember me</label><button class="text-button" type="button" data-action="forgot">Forgot password?</button></div><button class="button button-primary" type="submit">Sign in <span>→</span></button></form><div class="demo-login"><strong>Demo access</strong><p>Master Admin: admin@brdental.com / admin123<br>Patient: patient@brdental.com / demo123</p><button type="button" data-demo="admin">Use Master Admin account →</button></div><div class="auth-switch">New to BR Dental Clinic? <button type="button" data-action="register">Create a patient account</button></div></div></section></main>`;
 }
@@ -294,8 +341,8 @@ function renderDashboard() {
     ${isPatient ? patientTrust : ''}
   `;
 }
-function appointmentList() { return `<div class="appointment-list">${state.data.appointments.slice(0,4).map(a => `<div class="appointment-row"><span class="time">${a.time}</span><div><h3>${a.patient}</h3><div class="service">${a.service} · ${a.dentist}</div></div><span class="status ${statusClass(a.status)}">${a.status}</span></div>`).join('')}</div>`; }
-function activityList() { return `<div class="activity">${state.data.notifications.map(n => `<div class="activity-item"><span class="activity-mark">${ICONS[n.type] || ICONS.bell}</span><div><h3>${n.text}</h3><p>${n.time}</p></div></div>`).join('')}</div>`; }
+function appointmentList() { const appointments = state.user?.role === 'patient' ? state.data.appointments.filter(a => a.patient === state.user.name) : state.data.appointments; return `<div class="appointment-list">${appointments.slice(0,4).map(a => `<div class="appointment-row"><span class="time">${a.time}</span><div><h3>${a.patient}</h3><div class="service">${a.service} · ${a.dentist}</div></div><span class="status ${statusClass(a.status)}">${a.status}</span></div>`).join('')}</div>`; }
+function activityList() { const notifications = state.user?.role === 'patient' ? state.data.notifications.filter(n => n.text.includes(state.user.name)) : state.data.notifications; return `<div class="activity">${notifications.map(n => `<div class="activity-item"><span class="activity-mark">${ICONS[n.type] || ICONS.bell}</span><div><h3>${n.text}</h3><p>${n.time}</p></div></div>`).join('')}</div>`; }
 function miniChart() { const bars = [42,58,47,76,62,88,70]; return `<div class="chart">${bars.map((bar, i) => `<div class="bar-wrap"><div class="bar ${i === 5 ? 'highlight' : ''}" style="height:${bar}%"></div><span class="bar-label">${['M','T','W','T','F','S','S'][i]}</span></div>`).join('')}</div><div class="kpi-row" style="margin-top:16px"><div class="mini-kpi"><span>Collected</span><strong>$8.4k</strong></div><div class="mini-kpi"><span>Outstanding</span><strong>$2.1k</strong></div><div class="mini-kpi"><span>Collection rate</span><strong>81%</strong></div></div>`; }
 function tablePage(eyebrow, title, subtitle, action, toolbar, table) { return `${heading(eyebrow, title, subtitle, action)}${toolbar ? `<div class="toolbar">${toolbar}</div>` : ''}<div class="panel data-panel">${table}</div>`; }
 function tableToolbar(placeholder, filter = '') { return `<div class="search">${ICONS.search}<input id="table-search" type="search" placeholder="${placeholder}" value="${escapeHtml(state.query)}" /></div>${filter}`; }
@@ -332,5 +379,5 @@ function handleLogin(event) { event.preventDefault(); const form = new FormData(
 function handleRegister(event) { event.preventDefault(); const form = new FormData(event.target); const users = JSON.parse(localStorage.getItem('br-dental-extra-users') || '[]'); const user = { id:`u${Date.now()}`, name:form.get('name'), email:form.get('email'), password:form.get('password'), phone:form.get('phone'), role:'patient', status:'Active', created:'Today' }; users.push(user); localStorage.setItem('br-dental-extra-users', JSON.stringify(users)); state.user = user; state.authMode = 'login'; state.view = 'dashboard'; persistSession(); render(); notify('Patient account created. Welcome to BR Dental Clinic.'); }
 function handleModalSubmit(event) { event.preventDefault(); const form = new FormData(event.target); const type = event.target.dataset.formType; const record = Object.fromEntries(form.entries()); if (type === 'user') { const users = JSON.parse(localStorage.getItem('br-dental-extra-users') || '[]'); users.push({ ...record, id: `u${Date.now()}`, status:'Active', created:'Today' }); localStorage.setItem('br-dental-extra-users', JSON.stringify(users)); notify('User created with scoped access.'); } else if (type === 'patient') { state.data.patients.unshift({ ...record, id:`p${Date.now()}`, status:'Active', history:'No known history' }); saveData(); notify('Patient added to the directory.'); } else if (type === 'dentist') { state.data.dentists.unshift({ ...record, id:`d${Date.now()}`, status:'Active' }); saveData(); notify('Dentist added to the care team.'); } else if (type === 'service') { state.data.services.unshift({ ...record, id:`s${Date.now()}` }); saveData(); notify('Service added to the treatment menu.'); } else if (type === 'appointment') { state.data.appointments.unshift({ ...record, id:`a${Date.now()}`, date: record.date || 'Upcoming', time: record.time || '09:00 AM', note:'Created from clinic console' }); saveData(); notify('Appointment created successfully.'); } else if (type === 'record') { state.data.records.unshift({ ...record, id:`r${Date.now()}`, date:'Today', dentist:state.user.name }); saveData(); notify('Treatment note saved to the demo record.'); } else if (type === 'invoice') { state.data.invoices.unshift({ ...record, id:`INV-${Date.now().toString().slice(-4)}`, date:'Today' }); saveData(); notify('Invoice created successfully.'); } state.modal = null; render(); }
 
-const existingSession = localStorage.getItem('br-dental-session'); if (existingSession) { try { state.user = JSON.parse(existingSession); } catch { localStorage.removeItem('br-dental-session'); } }
+const existingSession = localStorage.getItem('br-dental-session'); if (existingSession) { try { state.user = JSON.parse(existingSession); if (state.user.email === 'admin@brdental.com') { state.user.name = 'Ma. Elena B. Retuerma'; persistSession(); } } catch { localStorage.removeItem('br-dental-session'); } }
 render();
