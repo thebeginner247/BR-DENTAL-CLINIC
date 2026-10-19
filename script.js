@@ -256,6 +256,32 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast("Logged out successfully.");
   }
 
+  function showLogoutConfirmation() {
+  openModal("Log out of your account?", `
+    <div class="logout-confirmation">
+      <div class="logout-confirmation-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 17l5-5-5-5"></path>
+          <path d="M15 12H3"></path>
+          <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"></path>
+        </svg>
+      </div>
+      <h2 id="logout-confirmation-title">Log out of your account?</h2>
+      <p>Are you sure you want to log out? You will need to sign back in to access your appointments and care records.</p>
+    </div>
+  `, [
+    { text: "Cancel", class: "btn-logout-cancel", action: closeModal },
+    { text: "Log Out", class: "btn-logout-confirm", action: () => {
+      closeModal();
+      terminateSession();
+    }}
+  ]);
+
+  el.modalBackdrop.classList.add("logout-confirmation-backdrop");
+  el.modalBackdrop.querySelector(".modal-dialog").setAttribute("aria-labelledby", "logout-confirmation-title");
+  el.modalFooter.querySelector(".btn-logout-cancel")?.focus();
+}
+
   // ==========================================
   // 5. EVENT LISTENERS
   // ==========================================
@@ -376,8 +402,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.querySelectorAll(".btn-logout-action").forEach(btn => {
-      btn.addEventListener("click", terminateSession);
-    });
+  btn.addEventListener("click", showLogoutConfirmation);
+});
 
     // Mobile Sidebar & Dropdowns
     el.sidebarToggleBtn.addEventListener("click", () => {
@@ -545,25 +571,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function openModal(title, bodyHTML, actions) {
-    el.modalTitle.textContent = title;
-    el.modalBody.innerHTML = bodyHTML;
-    el.modalFooter.innerHTML = "";
+  el.modalTitle.textContent = title;
+  el.modalBody.innerHTML = bodyHTML;
+  el.modalFooter.innerHTML = "";
 
-    actions.forEach(act => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = `btn ${act.class}`;
-      btn.textContent = act.text;
-      btn.addEventListener("click", act.action);
-      el.modalFooter.appendChild(btn);
-    });
+  actions.forEach(act => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `btn ${act.class}`;
+    btn.textContent = act.text;
+    btn.addEventListener("click", act.action);
+    el.modalFooter.appendChild(btn);
+  });
 
-    el.modalBackdrop.classList.remove("hidden");
-  }
+  el.modalBackdrop.classList.remove("hidden");
+  el.modalBackdrop.setAttribute("aria-hidden", "false");
+}
+
 
   function closeModal() {
-    el.modalBackdrop.classList.add("hidden");
-  }
+  el.modalBackdrop.classList.add("hidden");
+  el.modalBackdrop.classList.remove("logout-confirmation-backdrop");
+  el.modalBackdrop.setAttribute("aria-hidden", "true");
+  el.modalBackdrop.querySelector(".modal-dialog").setAttribute("aria-labelledby", "modal-title");
+}
 
   function showToast(msg, type = "info") {
     const toast = document.createElement("div");
