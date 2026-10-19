@@ -185,18 +185,18 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const targetView = document.getElementById(`view-${targetViewId}`);
+    if (!targetView) {
+      showToast("This page is not available yet.", "error");
+      return;
+    }
+
     document.querySelectorAll(".page-view").forEach(v => v.classList.remove("active"));
     document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-
-    const targetView = document.getElementById(`view-${targetViewId}`);
-    if (targetView) {
-      targetView.classList.add("active");
-    }
+    targetView.classList.add("active");
 
     const navLink = document.querySelector(`.nav-link[data-view="${targetViewId}"]`);
-    if (navLink) {
-      navLink.classList.add("active");
-    }
+    if (navLink) navLink.classList.add("active");
 
     closeDropdowns();
     el.appSidebar.classList.remove("show-sidebar");
@@ -224,6 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
       el.userAvatarCircle.textContent = (userObj.name || roleName).charAt(0).toUpperCase();
       const usersLink = document.querySelector('#nav-admin [data-view="admin-users"]');
       if (usersLink) usersLink.closest("li").classList.toggle("hidden", !["super-admin", "clinic-admin"].includes(role));
+
+      document.getElementById("admin-profile-name").value = userObj.name || roleName;
+      document.getElementById("admin-profile-role").value = roleName;
       switchView("admin-dashboard");
     } else {
       el.navAdmin.classList.add("hidden");
