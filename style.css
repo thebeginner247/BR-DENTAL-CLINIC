@@ -351,9 +351,11 @@ input:focus, select:focus, textarea:focus {
 }
 
 .brand-name {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--teal-primary);
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 .auth-heading {
