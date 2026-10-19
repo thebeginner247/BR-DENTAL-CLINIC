@@ -1,18 +1,913 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="BR Dental Clinic information, appointments and medical records system" />
-  <title>BR Dental Clinic | Care console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BR Dental Clinic - Patient Portal & Management System</title>
+  <meta name="description" content="Official website and management portal for BR Dental Clinic in Dasmariñas City, Cavite. Managed by Dr. Ma. Elena B. Retuerna.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app"></div>
-  <div id="toast-region" class="toast-region" aria-live="polite"></div>
-  <script src="js/app.js"></script>
+
+  <!-- AUTHENTICATION SCREEN (PATIENT SIGN-IN & SIGN-UP) -->
+  <main id="auth-screen" class="auth-wrapper">
+    <section class="auth-visual" aria-label="BR Dental Clinic patient portal">
+      <div class="auth-visual-inner">
+        <div class="auth-brand-lockup">
+          <img class="auth-brand-mark" src="brand-icon.png" alt="">
+          <span>BR Dental Clinic</span>
+        </div>
+        <div class="auth-visual-copy">
+          <p class="auth-eyebrow">PATIENT PORTAL</p>
+          <h2>Your dental care, in one place.</h2>
+          <p>Sign in to manage appointments and dental records, or create an account to get started.</p>
+        </div>
+        <p class="auth-location">73 Nyugan Road · Dasmariñas City, Cavite</p>
+      </div>
+    </section>
+
+    <section class="auth-card" aria-labelledby="auth-title">
+      <header class="auth-header">
+        <p id="auth-kicker" class="auth-kicker">Welcome back</p>
+        <h1 id="auth-title" class="auth-heading">Sign in to your clinic</h1>
+        <p id="auth-subtitle" class="auth-subtext">Use your email and password to continue.</p>
+      </header>
+
+      <div id="auth-alert" class="alert hidden" role="alert" aria-live="polite"></div>
+
+      <!-- SIGN IN FORM -->
+      <form id="signin-form" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="signin-email">Email Address <span class="req">*</span></label>
+          <input type="email" id="signin-email" name="email" autocomplete="email" required placeholder="name@example.com">
+          <span class="field-error" id="signin-email-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signin-password">Password <span class="req">*</span></label>
+          <div class="password-input-group">
+            <input type="password" id="signin-password" name="password" autocomplete="current-password" required placeholder="Enter your password">
+            <button type="button" class="btn-toggle-pass" data-target="signin-password" aria-label="Show password">Show</button>
+          </div>
+          <span class="field-error" id="signin-password-error"></span>
+        </div>
+
+        <div class="form-row-between">
+          <label class="checkbox-label">
+            <input type="checkbox" id="signin-remember" name="remember">
+            <span>Remember me</span>
+          </label>
+          <button type="button" class="btn-link" id="btn-forgot-password">Forgot Password?</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+
+        <div class="auth-divider"><span>OR</span></div>
+
+        <div class="oauth-group">
+          <button type="button" class="btn btn-oauth" id="btn-oauth-google">
+            <svg class="oauth-icon" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            Continue with Google
+          </button>
+          <button type="button" class="btn btn-oauth" id="btn-oauth-facebook">
+            <svg class="oauth-icon" viewBox="0 0 24 24" width="18" height="18" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Continue with Facebook
+          </button>
+        </div>
+
+        <p class="auth-switch-text">
+          Don't have an account? <button type="button" class="btn-link" id="link-to-signup">Sign Up</button>
+        </p>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="signup-form" class="auth-form hidden" novalidate>
+        <div class="form-group">
+          <label for="signup-fullname">Full Name <span class="req">*</span></label>
+          <input type="text" id="signup-fullname" name="fullname" required placeholder="Enter your full name">
+          <span class="field-error" id="signup-fullname-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-email">Email Address <span class="req">*</span></label>
+          <input type="email" id="signup-email" name="email" autocomplete="email" required placeholder="name@example.com">
+          <span class="field-error" id="signup-email-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-password">Create Password <span class="req">*</span></label>
+          <div class="password-input-group">
+            <input type="password" id="signup-password" name="password" autocomplete="new-password" required placeholder="Minimum 8 characters">
+            <button type="button" class="btn-toggle-pass" data-target="signup-password" aria-label="Show password">Show</button>
+          </div>
+          <span class="field-error" id="signup-password-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-confirm-password">Confirm Password <span class="req">*</span></label>
+          <div class="password-input-group">
+            <input type="password" id="signup-confirm-password" name="confirm-password" autocomplete="new-password" required placeholder="Re-enter password">
+            <button type="button" class="btn-toggle-pass" data-target="signup-confirm-password" aria-label="Show password">Show</button>
+          </div>
+          <span class="field-error" id="signup-confirm-password-error"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create Patient Account</button>
+
+        <p class="auth-switch-text">
+          Already have an account? <button type="button" class="btn-link" id="link-to-signin">Sign In</button>
+        </p>
+      </form>
+
+      <div class="demo-role-switcher">
+        <span>Test Demo Roles:</span>
+        <div class="demo-role-buttons">
+          <button type="button" class="btn btn-sm btn-outline" id="btn-demo-patient">Enter as Patient</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-demo-admin">Enter as Master Admin</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-demo-clinic-admin">Enter as Clinic Admin</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MAIN APP SHELL (HIDDEN UNTIL AUTHENTICATED) -->
+  <div id="app-shell" class="app-shell hidden">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside id="app-sidebar" class="sidebar" aria-label="Main Navigation">
+      <div class="sidebar-header">
+        <div class="clinic-brand">
+          <img class="brand-icon" src="brand-icon.png" alt="" width="32" height="32">
+          <div class="brand-meta">
+            <span class="brand-name">BR Dental Clinic</span>
+            <span id="portal-role-tag" class="role-tag">Patient Portal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT NAVIGATION -->
+      <nav id="nav-patient" class="sidebar-nav">
+        <ul>
+          <li><a href="#" class="nav-link active" data-view="patient-home">Home</a></li>
+          <li><a href="#" class="nav-link" data-view="patient-about">About Us</a></li>
+          <li><a href="#" class="nav-link" data-view="patient-services">Services</a></li>
+          <li><a href="#" class="nav-link" data-view="patient-dentists">Our Dentists</a></li>
+          <li><a href="#" class="nav-link" data-view="patient-contact">Contact Us</a></li>
+          <li><a href="#" class="nav-link" data-view="patient-book">Book Appointment</a></li>
+        </ul>
+      </nav>
+
+      <!-- ADMIN NAVIGATION -->
+      <nav id="nav-admin" class="sidebar-nav hidden">
+        <ul>
+          <li><a href="#" class="nav-link active" data-view="admin-dashboard">Dashboard</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-appointments">Appointments</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-patients">Patients</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-dentists">Dentists</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-records">Dental Records</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-services">Services</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-schedules">Schedules</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-reports">Reports</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-users">Users &amp; Roles</a></li>
+          <li><a href="#" class="nav-link" data-view="admin-settings">Settings</a></li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button type="button" class="btn btn-outline btn-block btn-logout-action">Log Out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+
+      <!-- TOP NAVIGATION BAR -->
+      <header class="top-navbar">
+        <button type="button" id="sidebar-toggle-btn" class="btn-icon" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+        <div class="navbar-search">
+          <label for="global-search-input" class="sr-only">Search</label>
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input type="search" id="global-search-input" placeholder="Search services, patients, or appointments...">
+        </div>
+
+        <div class="navbar-right">
+          <!-- NOTIFICATIONS DROPDOWN -->
+          <div class="dropdown-wrap">
+            <button type="button" class="btn-icon dropdown-trigger" id="btn-notif-toggle" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span id="notif-count-badge" class="badge-count hidden">0</span>
+            </button>
+            <div id="notif-dropdown-panel" class="dropdown-panel dropdown-right hidden">
+              <div class="dropdown-header"><h3>Notifications</h3></div>
+              <ul id="notif-list-container" class="dropdown-list">
+                <li class="empty-list-text">No new notifications from server</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- USER PROFILE DROPDOWN -->
+          <div class="dropdown-wrap">
+            <button type="button" class="btn-profile dropdown-trigger" id="btn-profile-toggle" aria-haspopup="true" aria-expanded="false">
+              <span id="user-avatar-circle" class="avatar-circle">P</span>
+              <span id="user-display-name" class="profile-name">Signed In User</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="profile-dropdown-panel" class="dropdown-panel dropdown-right hidden">
+              <ul class="dropdown-list">
+                <li><a href="#" class="dropdown-item" data-view-target="profile">My Profile</a></li>
+                <li><a href="#" class="dropdown-item" data-view-target="appointments">My Appointments</a></li>
+                <li><a href="#" class="dropdown-item" data-view-target="records">Dental Records</a></li>
+                <li><a href="#" class="dropdown-item" data-view-target="settings">Account Settings</a></li>
+                <li class="dropdown-divider"></li>
+                <li><button type="button" class="dropdown-logout-btn btn-logout-action">Log Out</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- TOAST NOTIFICATIONS -->
+      <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+      <!-- PAGE VIEWS viewport -->
+      <div id="views-viewport" class="views-viewport">
+
+        <!-- ================= PATIENT VIEWS ================= -->
+
+        <!-- PATIENT: HOME -->
+        <section id="view-patient-home" class="page-view active">
+          <div class="welcome-banner">
+            <div class="welcome-copy">
+              <p class="section-kicker">YOUR CARE SPACE</p>
+              <h1>Welcome to BR Dental Clinic</h1>
+              <p>Appointments, clinic information, and dental services in one place.</p>
+              <div class="welcome-actions">
+                <button type="button" class="btn btn-primary" data-navigate="patient-book">Book an appointment</button>
+                <button type="button" class="btn btn-soft" data-navigate="patient-services">Explore services</button>
+              </div>
+            </div>
+            <div class="welcome-clinic-note">
+              <img src="brand-icon.png" alt="" width="40" height="40">
+              <div>
+                <strong>BR Dental Clinic</strong>
+                <span>Paliparan 1, Dasmariñas City</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-section-heading">
+            <div>
+              <p class="section-kicker">CLINIC AT A GLANCE</p>
+              <h2>Plan your visit</h2>
+            </div>
+          </div>
+          <div class="cards-grid-3 home-info-grid">
+            <article class="card">
+              <p class="card-eyebrow">FIND US</p>
+              <h3>Clinic location</h3>
+              <p>73 Nyugan Road, Paliparan 1<br>Dasmariñas City, Cavite</p>
+            </article>
+            <article class="card">
+              <p class="card-eyebrow">GET IN TOUCH</p>
+              <h3>Call the clinic</h3>
+              <p><a href="tel:09066636112">09066636112</a></p>
+              <p class="text-sub">Please call to confirm opening hours and availability.</p>
+            </article>
+            <article class="card">
+              <p class="card-eyebrow">YOUR DENTIST</p>
+              <h3>Dr. Ma. Elena B. Retuerna</h3>
+              <p class="text-sub">The clinic’s listed dentist.</p>
+            </article>
+          </div>
+
+          <div class="clinic-note-banner mt-4">
+            <div>
+              <h2>Need help with your visit?</h2>
+              <p>Contact the clinic to confirm hours or ask about appointment availability.</p>
+            </div>
+            <button type="button" class="btn btn-soft" data-navigate="patient-contact">Contact us</button>
+          </div>
+        </section>
+
+        <!-- PATIENT: ABOUT US -->
+        <section id="view-patient-about" class="page-view">
+          <div class="page-header">
+            <h1>About BR Dental Clinic</h1>
+            <p>Gentle and thorough dental care for you and your family.</p>
+          </div>
+          <div class="card max-w-prose">
+            <h2>Clinic Background & Mission</h2>
+            <p>BR Dental Clinic operates in Dasmariñas City, Cavite, maintaining a clean and welcoming facility designed to ensure patient comfort during dental checkups and treatments.</p>
+            <p class="mt-2">Our mission is to support long-term oral health through careful examinations, patient education, and straightforward dental care.</p>
+          </div>
+        </section>
+
+        <!-- PATIENT: SERVICES -->
+        <section id="view-patient-services" class="page-view">
+          <div class="page-header">
+            <h1>Our Dental Services</h1>
+            <p>Review treatments and services offered at the clinic.</p>
+          </div>
+          <div id="patient-services-grid" class="cards-grid-auto">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- PATIENT: OUR DENTISTS -->
+        <section id="view-patient-dentists" class="page-view">
+          <div class="page-header">
+            <h1>Our Dentist</h1>
+            <p>Meet our verified clinic practitioner.</p>
+          </div>
+          <div class="card profile-card-large">
+            <div class="dentist-avatar">DR</div>
+            <div class="dentist-info">
+              <h2>Dr. Ma. Elena B. Retuerna</h2>
+              <p class="dentist-role">Lead Dentist — BR Dental Clinic</p>
+              <hr class="divider">
+              <p><strong>Verified Qualifications:</strong> <span class="text-sub">Verified Practitioner</span></p>
+              <p><strong>Clinical Schedule:</strong> <span class="text-sub">Not provided (Schedules are loaded upon backend API synchronization).</span></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- PATIENT: CONTACT US -->
+        <section id="view-patient-contact" class="page-view">
+          <div class="page-header">
+            <h1>Contact Us</h1>
+            <p>Get in touch or locate our clinic.</p>
+          </div>
+          <div class="grid-2col">
+            <div class="card">
+              <h2>Clinic Information</h2>
+              <ul class="contact-info-list">
+                <li><strong>Clinic Name:</strong> BR Dental Clinic</li>
+                <li><strong>Phone Number:</strong> 09066636112</li>
+                <li><strong>Address:</strong> 73 Nyugan Road, Paliparan 1, Dasmariñas City, Cavite</li>
+                <li><strong>Opening Hours:</strong> <span class="text-sub">Not provided (Please call the clinic directly to verify daily hours).</span></li>
+              </ul>
+            </div>
+            <div class="card">
+              <h2>Location Map</h2>
+              <div class="map-container">
+                <p><strong>BR Dental Clinic</strong></p>
+                <p class="text-sub">73 Nyugan Road, Paliparan 1, Dasmariñas City, Cavite</p>
+                <a href="https://maps.google.com/?q=73+Nyugan+Road+Paliparan+1+Dasmarinas+City+Cavite" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm mt-3">View on Google Maps</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PATIENT: BOOK APPOINTMENT -->
+        <section id="view-patient-book" class="page-view">
+          <div class="page-header">
+            <h1>Book an Appointment</h1>
+            <p>Submit a visit request with your preferred service and date.</p>
+          </div>
+          <div class="card form-card-narrow">
+            <form id="booking-form" novalidate>
+              <div class="form-group">
+                <label for="book-service">Select Service <span class="req">*</span></label>
+                <select id="book-service" required>
+                  <option value="">-- Choose a Service --</option>
+                </select>
+                <span class="field-error" id="book-service-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="book-dentist">Attending Dentist</label>
+                <input type="text" id="book-dentist" value="Dr. Ma. Elena B. Retuerna" readonly class="input-readonly">
+              </div>
+
+              <div class="grid-2col">
+                <div class="form-group">
+                  <label for="book-date">Preferred Date <span class="req">*</span></label>
+                  <input type="date" id="book-date" required>
+                  <span class="field-error" id="book-date-error"></span>
+                </div>
+                <div class="form-group">
+                  <label for="book-time">Preferred Time Slot <span class="req">*</span></label>
+                  <select id="book-time" required>
+                    <option value="">-- Choose Time --</option>
+                    <option value="09:00 AM">09:00 AM</option>
+                    <option value="10:30 AM">10:30 AM</option>
+                    <option value="01:30 PM">01:30 PM</option>
+                    <option value="03:00 PM">03:00 PM</option>
+                  </select>
+                  <span class="field-error" id="book-time-error"></span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="book-notes">Additional Notes / Symptoms (Optional)</label>
+                <textarea id="book-notes" rows="3" placeholder="Describe any dental pain or notes for the clinic..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit Booking Request</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- PATIENT: MY PROFILE -->
+        <section id="view-patient-profile" class="page-view">
+          <div class="page-header">
+            <h1>My Profile</h1>
+            <p>View and update your personal information.</p>
+          </div>
+          <div class="card form-card-narrow">
+            <form id="patient-profile-form">
+              <div class="form-group">
+                <label for="profile-fullname">Full Name</label>
+                <input type="text" id="profile-fullname" required>
+              </div>
+              <div class="form-group">
+                <label for="profile-email">Email Address</label>
+                <input type="email" id="profile-email" readonly class="input-readonly">
+                <span class="field-hint">Email updates must be validated through the backend server.</span>
+              </div>
+              <div class="form-group">
+                <label for="profile-phone">Contact Phone Number</label>
+                <input type="tel" id="profile-phone" placeholder="09XXXXXXXXX">
+              </div>
+              <button type="submit" class="btn btn-primary">Save Profile</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- PATIENT: MY APPOINTMENTS -->
+        <section id="view-patient-appointments" class="page-view">
+          <div class="page-header">
+            <h1>My Appointments</h1>
+            <p>Track your scheduled, pending, and past clinic visits.</p>
+          </div>
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Service Requested</th>
+                    <th>Dentist</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patient-appointments-tbody">
+                  <!-- Dynamic content or empty state -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PATIENT: DENTAL RECORDS -->
+        <section id="view-patient-records" class="page-view">
+          <div class="page-header">
+            <h1>Dental Records</h1>
+            <p>View official clinical notes and treatment history recorded by your doctor.</p>
+          </div>
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Treatment / Procedure</th>
+                    <th>Clinical Notes</th>
+                    <th>Attending Dentist</th>
+                  </tr>
+                </thead>
+                <tbody id="patient-records-tbody">
+                  <!-- Dynamic content or empty state -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PATIENT / GENERAL: ACCOUNT SETTINGS -->
+        <section id="view-patient-settings" class="page-view">
+          <div class="page-header">
+            <h1>Account Settings</h1>
+            <p>Manage security and preferences.</p>
+          </div>
+          <div class="card form-card-narrow">
+            <h2>Change Password</h2>
+            <form id="change-password-form">
+              <div class="form-group">
+                <label for="curr-password">Current Password</label>
+                <input type="password" id="curr-password" required placeholder="Enter current password">
+              </div>
+              <div class="form-group">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" required placeholder="Minimum 8 characters">
+              </div>
+              <button type="submit" class="btn btn-primary">Update Password</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= ADMIN VIEWS ================= -->
+
+        <!-- ADMIN: DASHBOARD -->
+        <section id="view-admin-dashboard" class="page-view">
+          <div class="page-header">
+            <h1>Admin Dashboard</h1>
+            <p>Clinic overview and today's appointment schedule.</p>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Total Patients</span>
+              <span id="kpi-total-patients" class="kpi-num">0</span>
+              <span class="kpi-sub">Loaded from backend API</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Appointments Today</span>
+              <span id="kpi-today-appointments" class="kpi-num">0</span>
+              <span class="kpi-sub">Scheduled for today</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Active Dentists</span>
+              <span id="kpi-active-dentists" class="kpi-num">1</span>
+              <span class="kpi-sub">Dr. Ma. Elena B. Retuerna</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Pending Requests</span>
+              <span id="kpi-pending-requests" class="kpi-num">0</span>
+              <span class="kpi-sub">Requires admin action</span>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <h2>Today's Appointments Schedule</h2>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time Slot</th>
+                    <th>Patient Name</th>
+                    <th>Selected Service</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-today-tbody">
+                  <!-- Dynamic content or empty state -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: APPOINTMENTS -->
+        <section id="view-admin-appointments" class="page-view">
+          <div class="page-header flex-between">
+            <div>
+              <h1>Appointments Management</h1>
+              <p>Approve, reschedule, or cancel patient booking requests.</p>
+            </div>
+            <div>
+              <select id="admin-apt-filter" class="form-control-sm">
+                <option value="ALL">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rescheduled">Rescheduled</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Patient Name</th>
+                    <th>Service</th>
+                    <th>Assigned Doctor</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-appointments-tbody">
+                  <!-- Dynamic content or empty state -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: PATIENTS -->
+        <section id="view-admin-patients" class="page-view">
+          <div class="page-header">
+            <h1>Patients Directory</h1>
+            <p>Search and view patient records and profiles.</p>
+          </div>
+          <div class="card">
+            <div class="search-wrap mb-3">
+              <input type="search" id="admin-patient-search" placeholder="Search patient by name or email...">
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Patient ID</th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Contact Phone</th>
+                    <th>Registration Date</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-patients-tbody">
+                  <!-- Dynamic content or empty state -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: DENTISTS -->
+        <section id="view-admin-dentists" class="page-view">
+          <div class="page-header">
+            <h1>Dentist Management</h1>
+            <p>Manage practitioner details and schedules.</p>
+          </div>
+          <div class="card">
+            <h2>Listed Clinic Practitioner</h2>
+            <div class="dentist-row-item mt-3">
+              <div class="dentist-avatar">DR</div>
+              <div>
+                <h3>Dr. Ma. Elena B. Retuerna</h3>
+                <p><strong>Role:</strong> Lead Practitioner / General Dentist</p>
+                <p><strong>Status:</strong> Active Practitioner</p>
+                <p class="text-sub mt-2">Note: Dr. Ma. Elena B. Retuerna is the sole dentist at BR Dental Clinic. Additional dentist creation is disabled as per clinic configuration.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: DENTAL RECORDS -->
+        <section id="view-admin-records" class="page-view">
+          <div class="page-header flex-between">
+            <div>
+              <h1>Dental Records & Notes</h1>
+              <p>Log treatment histories and clinical progress notes.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-modal-record">Add Clinical Record</button>
+          </div>
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Patient Name</th>
+                    <th>Treatment Provided</th>
+                    <th>Clinical Notes</th>
+                    <th>Attending Doctor</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-records-tbody">
+                  <!-- Dynamic content or empty state -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: SERVICES -->
+        <section id="view-admin-services" class="page-view">
+          <div class="page-header flex-between">
+            <div>
+              <h1>Services & Pricing Management</h1>
+              <p>Manage treatment options, descriptions, and displayed prices.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-modal-service">Add New Service</button>
+          </div>
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Service Name</th>
+                    <th>Description</th>
+                    <th>Display Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-services-tbody">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: SCHEDULES -->
+        <section id="view-admin-schedules" class="page-view">
+          <div class="page-header">
+            <h1>Clinic Hours & Availability</h1>
+            <p>Configure default working hours and time slot limits.</p>
+          </div>
+          <div class="card form-card-narrow">
+            <form id="schedule-settings-form">
+              <div class="form-group">
+                <label for="sched-days">Operating Days</label>
+                <input type="text" id="sched-days" value="Monday to Saturday">
+              </div>
+              <div class="form-group">
+                <label for="sched-hours">Operating Hours</label>
+                <input type="text" id="sched-hours" value="8:00 AM - 5:00 PM">
+              </div>
+              <button type="submit" class="btn btn-primary">Save Schedule Settings</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ADMIN: REPORTS -->
+        <section id="view-admin-reports" class="page-view">
+          <div class="page-header flex-between">
+            <div>
+              <h1>Reports & Analytics</h1>
+              <p>Export or print appointment summaries and clinic logs.</p>
+            </div>
+            <button type="button" class="btn btn-outline" id="btn-print-report">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print Report
+            </button>
+          </div>
+
+          <div class="card mb-3">
+            <div class="report-filters">
+              <div class="form-group">
+                <label for="report-from">From Date</label>
+                <input type="date" id="report-from">
+              </div>
+              <div class="form-group">
+                <label for="report-to">To Date</label>
+                <input type="date" id="report-to">
+              </div>
+              <div class="form-group">
+                <label for="report-type">Report Type</label>
+                <select id="report-type">
+                  <option value="appointments">Appointments Log</option>
+                  <option value="patients">Patient Registrations</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-secondary btn-align-bottom" id="btn-run-report">Filter Report</button>
+            </div>
+          </div>
+
+          <div id="printable-report" class="card">
+            <div class="report-print-header">
+              <h2>BR Dental Clinic — Official Summary Report</h2>
+              <p>73 Nyugan Road, Paliparan 1, Dasmariñas City, Cavite | Phone: 09066636112</p>
+              <hr class="divider">
+            </div>
+            <div id="report-results-body">
+              <p class="text-sub text-center">Select filters above and click 'Filter Report' to generate data.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADMIN: SETTINGS -->
+        <section id="view-admin-settings" class="page-view">
+          <div class="page-header">
+            <h1>Admin Settings</h1>
+            <p>Update administrative details and clinic parameters.</p>
+          </div>
+          <div class="card form-card-narrow">
+            <h2>Clinic Details</h2>
+            <form id="admin-clinic-info-form" class="mb-4">
+              <div class="form-group">
+                <label for="admin-setting-name">Clinic Name</label>
+                <input type="text" id="admin-setting-name" value="BR Dental Clinic" readonly class="input-readonly">
+              </div>
+              <div class="form-group">
+                <label for="admin-setting-phone">Phone Number</label>
+                <input type="text" id="admin-setting-phone" value="09066636112">
+              </div>
+              <div class="form-group">
+                <label for="admin-setting-address">Address</label>
+                <input type="text" id="admin-setting-address" value="73 Nyugan Road, Paliparan 1, Dasmarinas City, Cavite">
+              </div>
+              <button type="submit" class="btn btn-primary">Update Clinic Info</button>
+            </form>
+
+            <hr class="divider">
+
+            <h2 class="mt-4">Change Admin Account Password</h2>
+            <form id="admin-pass-change-form">
+              <div class="form-group">
+                <label for="admin-curr-pass">Current Admin Password</label>
+                <input type="password" id="admin-curr-pass" required placeholder="Enter current password">
+              </div>
+              <div class="form-group">
+                <label for="admin-new-pass">New Admin Password</label>
+                <input type="password" id="admin-new-pass" required placeholder="Minimum 8 characters">
+              </div>
+              <button type="submit" class="btn btn-primary">Save New Password</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ADMIN: USER ROLES AND PERMISSIONS -->
+        <section id="view-admin-users" class="page-view">
+          <div class="page-header flex-between">
+            <div>
+              <p class="section-kicker">ACCESS MANAGEMENT</p>
+              <h1>Users &amp; Roles</h1>
+              <p>Review each role’s responsibilities and create clinic accounts.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-create-user">Create account</button>
+          </div>
+
+          <section class="role-flow-card card" aria-labelledby="account-flow-title">
+            <div class="role-flow-heading">
+              <div>
+                <p class="section-kicker">ACCOUNT SETUP</p>
+                <h2 id="account-flow-title">Who creates each account</h2>
+              </div>
+              <p class="flow-note">Patient accounts are created through public sign-up.</p>
+            </div>
+            <ol class="account-flow-list">
+              <li>
+                <span class="flow-step-number">01</span>
+                <div><h3>Super Admin</h3><p>Creates Clinic Admin / Manager accounts.</p></div>
+              </li>
+              <li>
+                <span class="flow-step-number">02</span>
+                <div><h3>Clinic Admin / Manager</h3><p>Creates Dentist, Receptionist, and Billing Staff accounts.</p></div>
+              </li>
+              <li>
+                <span class="flow-step-number">03</span>
+                <div><h3>Patient</h3><p>Registers and manages their own account.</p></div>
+              </li>
+            </ol>
+            <p class="account-setup-note">Account entries are kept in this browser session only. Connect a secure identity service to create real logins and send invitations.</p>
+          </section>
+
+          <section class="role-permissions-section" aria-labelledby="role-permissions-title">
+            <div class="home-section-heading">
+              <div>
+                <p class="section-kicker">ROLE GUIDE</p>
+                <h2 id="role-permissions-title">Roles and permissions</h2>
+              </div>
+            </div>
+            <div id="role-permission-list" class="role-permission-list"></div>
+          </section>
+
+          <section class="card staff-user-panel" aria-labelledby="clinic-users-title">
+            <div class="staff-user-heading">
+              <div>
+                <h2 id="clinic-users-title">Clinic user accounts</h2>
+                <p class="text-sub">New accounts appear here during this demo session.</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email address</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Created by</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-users-tbody">
+                  <tr><td colspan="5" class="empty-cell">No staff accounts have been added in this session.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+      </div> <!-- /views-viewport -->
+    </div> <!-- /main-wrapper -->
+  </div> <!-- /app-shell -->
+
+  <!-- REUSABLE MODAL DIALOG -->
+  <div id="modal-backdrop" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="modal-header">
+        <h2 id="modal-title">Dialog Title</h2>
+        <button type="button" class="btn-icon btn-modal-close" aria-label="Close dialog">&times;</button>
+      </header>
+      <div id="modal-body" class="modal-body">
+        <!-- Dynamic modal form -->
+      </div>
+      <footer id="modal-footer" class="modal-footer">
+        <!-- Dynamic actions -->
+      </footer>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
